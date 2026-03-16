@@ -1,0 +1,88 @@
+name: Build and deploy ASP.Net Core app to Windows Server - freshxapi
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: dotnet restore
+
+      # Build the app
+      - name: Build with dotnet
+        run: dotnet build --configuration Release
+
+      # Publish the app to the ./publish folder
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ./publish
+
+      # Create .env file inside ./publish directory
+      - name: Create .env file
+        run: |
+          echo ENCRYPTION_PASSWORD=${{ secrets.ENCRYPTION_PASSWORD }} >> ./publish/.env
+          echo ENCRYPTION_SALT=${{ secrets.ENCRYPTION_SALT }} >> ./publish/.env
+
+      # Upload the artifact to use in the deployment job
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          path: ./publish
+          if-no-files-found: warn
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: true  # Ensure hidden files like .env are uploaded
+
+  deploy:
+    runs-on: windows-latest  # Chạy trên môi trường Windows
+    needs: build
+    steps:
+      # Tải artifact đã build
+      - name: Download artifact for deployment
+        uses: actions/download-artifact@v4
+        with:
+          name: .net-app
+          path: ./publish
+
+      # Cấu hình SSH Key để truy cập từ xa
+      - name: Setup SSH Key for remote access
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Thêm khóa riêng SSH vào GitHub secrets
+
+      # Kiểm tra kết nối SSH tới server
+      - name: Check SSH Connection to the Server
+        run: |
+          echo "Checking SSH Connection..."
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} user@100.95.37.29 'echo SSH connection successful!'
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Dừng ứng dụng đang chạy (nếu cần)
+      - name: Stop the running app (if needed)
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} user@100.95.37.29 'taskkill /f /im freshx_api.dll'
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Triển khai phiên bản mới
+      - name: Deploy the new version
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} user@100.95.37.29 'cd E:/Share/source && dotnet run freshx_api.dll'
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
