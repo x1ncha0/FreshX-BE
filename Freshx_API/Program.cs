@@ -29,7 +29,6 @@ using System.Text;
 using Microsoft.AspNetCore.SignalR;
 using Freshx_API.Interfaces.Payments;
 using Freshx_API.Repository.Payments;
-using Freshx_API.Repository.Payments;
 using Freshx_API.Interfaces.IReception;
 using Freshx_API.Repository.LabResults;
 using Freshx_API.Interfaces.Services;
@@ -41,10 +40,10 @@ using System.Reflection;
 using Hangfire;
 using Hangfire.SqlServer;
 using Freshx_API.Services.HangfireService;
+
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
-
 
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 // hiển thị phiên bản
@@ -86,12 +85,14 @@ builder.Services.AddSwaggerGen(option =>
         }
             });
 });
+
 //Tránh lỗi StackOverflowException khi serialize
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 });
-// Đọc password và salt từ biến môi trườn g
+
+// Đọc password và salt từ biến môi trường
 string password = Environment.GetEnvironmentVariable("ENCRYPTION_PASSWORD")
 ?? builder.Configuration["EncryptionSettings:Password"]
 ?? "DefaultPassword";
@@ -109,7 +110,6 @@ if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(saltString))
 
 byte[] salt = Encoding.UTF8.GetBytes(saltString);
 
-
 builder.Configuration.AddConfiguration(
     new ConfigurationBuilder()
         .Add(new EncryptedConfigurationSource(password, salt))
@@ -120,11 +120,13 @@ var jwtKey = builder.Configuration["Jwt:Key"];
 var blobConnectionString = builder.Configuration["AzureBlobStorage:ConnectionString"];
 var containerName = builder.Configuration["AzureBlobStorage:ContainerName"];
 Console.WriteLine("jkds" + builder.Configuration["FileSettings:DevicePath"]);
+
 // Add services to the container.
 builder.Services.AddDbContext<FreshxDBContext>(options =>
 {
     options.UseSqlServer(connectionString);
 });
+
 // Add hangfire service
 builder.Services.AddHangfire(configuration => configuration
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
@@ -157,7 +159,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 .AddDefaultTokenProviders();
 builder.Services.AddIdentityCore<AppUser>()
     .AddTokenProvider<DataProtectorTokenProvider<AppUser>>(TokenOptions.DefaultProvider);
-//
+
 builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
 {
     options.InvalidModelStateResponseFactory = context =>
@@ -175,7 +177,7 @@ builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
         {
             Status = false,
             Path = context.HttpContext.Request.Path,
-            Message ="Dữ liệu đầu vào không hợp lệ",
+            Message = "Dữ liệu đầu vào không hợp lệ",
             StatusCode = StatusCodes.Status400BadRequest,
             Data = errors,
             Timestamp = DateTime.UtcNow
@@ -187,7 +189,8 @@ builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
             StatusCode = StatusCodes.Status400BadRequest
         };
     };
-}); ;
+});
+
 // Cấu hình Kestrel để lắng nghe trên Tailscale IP
 builder.WebHost.ConfigureKestrel((context, options) =>
 {
@@ -199,10 +202,11 @@ builder.WebHost.ConfigureKestrel((context, options) =>
     }
     else
     {
-        
+
     }
     //options.Listen(System.Net.IPAddress.Any,5000); // Lắng nghe trên tất cả các IP
 });
+
 // Configure JWT authentication
 builder.Services.AddAuthentication(options =>
 {
@@ -219,7 +223,7 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero,
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
         ),
         RoleClaimType = ClaimTypes.Role
     };
@@ -234,7 +238,7 @@ builder.Services.AddAuthentication(options =>
                 context.Fail("Token has expired");
             }
 
-            var userClaims = context.Principal.Claims;
+            var userClaims = context.Principal!.Claims;
             if (!userClaims.Any())
             {
                 context.Fail("Token contains no claims");
@@ -336,12 +340,6 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Thêm cấu hình AutoMapper
-var mapperConfig = new MapperConfiguration(mc =>
-{
-    // Thêm các profile của bạn ở đây
-    // mc.AddProfile(new YourAutoMapperProfile());
-});
 // Custom route lowercase
 builder.Services.Configure<RouteOptions>(options =>
 {
@@ -365,13 +363,13 @@ builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 builder.Services.AddScoped<NumberGeneratorService>();
 builder.Services.AddScoped<IFixDoctorRepository, FixDoctorRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<ITechnicianRepository,TechnicianRepository>();
-builder.Services.AddScoped<IUserAccountManagementRepository,UserAccountManagementRepository>();
+builder.Services.AddScoped<ITechnicianRepository, TechnicianRepository>();
+builder.Services.AddScoped<IUserAccountManagementRepository, UserAccountManagementRepository>();
 builder.Services.AddScoped<IFixDepartmentTypeRepository, FixDepartmentTypeRepository>();
 builder.Services.AddScoped<IFixDepartmentRepository, FixDepartmentRepositiory>();
-builder.Services.AddScoped<IOnlineAppointmentRepository,OnlineAppointmentRepository>();
+builder.Services.AddScoped<IOnlineAppointmentRepository, OnlineAppointmentRepository>();
 // Thêm AutoMapper
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<AutoMapperProfile>());
 
 builder.Services.AddScoped<IDrugTypeRepository, DrugTypeRepository>();
 builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
@@ -387,13 +385,11 @@ builder.Services.AddScoped<IMedicalServiceRequestService, MedicalServiceRequestS
 builder.Services.AddScoped<IDepartmentTypeRepository, DepartmentTypeRepository>();
 builder.Services.AddScoped<DepartmentTypeService>();
 
-
 builder.Services.AddScoped<IDrugTypeRepository, DrugTypeRepository>();
 builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
 
-builder.Services.AddScoped<IPharmacyRepository,PharmacyRepository>();
+builder.Services.AddScoped<IPharmacyRepository, PharmacyRepository>();
 builder.Services.AddScoped<PharmacyService>();
-
 
 // Đăng ký Repository và Service với Doctor Injection
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
@@ -403,7 +399,6 @@ builder.Services.AddScoped<DoctorService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<DepartmentService>();
 
-
 // Đăng ký Repository và Service với InventoryType Injection
 builder.Services.AddScoped<IInventoryTypeRepository, InventoryTypeRepository>();
 builder.Services.AddScoped<InventoryTypeService>();
@@ -412,17 +407,13 @@ builder.Services.AddScoped<InventoryTypeService>();
 builder.Services.AddScoped<IPharmacyRepository, PharmacyRepository>();
 builder.Services.AddScoped<PharmacyService>();
 
-
-
 // Đăng ký Repository và Service với InventoryType Injection
 builder.Services.AddScoped<IServiceGroupRepository, ServiceGroupRepository>();
 builder.Services.AddScoped<ServiceGroupService>();
 
-
 // Đăng ký Repository và Service với InventoryType Injection
 builder.Services.AddScoped<IServiceCatalogRepository, ServiceCatalogRepository>();
 builder.Services.AddScoped<ServiceCatalogService>();
-
 
 // Đăng ký Repository và Service với InventoryType Injection
 builder.Services.AddScoped<IUnitOfMeasureRepository, UnitOfMeasureRepository>();
@@ -431,7 +422,6 @@ builder.Services.AddScoped<UnitOfMeasureService>();
 // Đăng ký Repository và Service với InventoryType Injection
 builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 builder.Services.AddScoped<SupplierService>();
-
 
 // Đăng ký Repository và Service với InventoryType Injection
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
@@ -444,6 +434,7 @@ builder.Services.AddScoped<DrugCatalogService>();
 //Dăng kí Reponsitory và service cho địa chỉ
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IAddressService, AddressService>();
+
 // Đăng ký PdfRepository và PdfService
 builder.Services.AddScoped<IPdfRepository, PdfRepository>();
 builder.Services.AddScoped<IPdfService, PdfService>();
@@ -451,7 +442,6 @@ builder.Services.AddScoped<ChatService>();
 
 //đăng kí service
 builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
-
 
 //Đăng ký Repository và service cho payments
 builder.Services.AddScoped<IBillingRepository, BillingRepository>();
@@ -462,7 +452,7 @@ builder.Services.AddScoped<ILabResultRepository, LabResultRepository>();
 builder.Services.AddScoped<ILabResultService, LabResultService>();
 
 //Đăng kí Prescription - toa thuốc - toa thuốc chi tiết
-builder.Services.AddScoped<IPrescriptionService,PrescriptionService>();
+builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
 builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
 builder.Services.AddScoped<IPrescriptionDetailRepository, PrescriptionDetailRepository>();
 builder.Services.AddScoped<IPrescriptionDetailService, PrescriptionDetailService>();
@@ -480,33 +470,28 @@ builder.Services.AddScoped<RepositoryCheck>();
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
 
-        // Thêm DefaultAzureCredential
-        builder.Services.AddSingleton<DefaultAzureCredential>();
-        // Đăng ký IHttpContextAccessor để có thể truy cập HttpContext
-        builder.Services.AddHttpContextAccessor();
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
 
 // Đăng ký IHttpContextAccessor để có thể truy cập HttpContext
 builder.Services.AddHttpContextAccessor();
-// Cấu hình Kestrel để lắng nghe trên tất cả các địa chỉ IP
-//builder.WebHost.ConfigureKestrel(options =>
-//{
-//    options.Listen(IPAddress.Any, 7075); // Hoặc địa chỉ IP của thiết bị
-//});
 
+// Thêm DefaultAzureCredential
+builder.Services.AddSingleton<DefaultAzureCredential>();
+
+// Đăng ký IHttpContextAccessor để có thể truy cập HttpContext
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-
-// 5. Configure Hangfire Dashboard
+// Configure Hangfire Dashboard
 app.UseHangfireDashboard("/hangfire", new DashboardOptions
 {
     DashboardTitle = "FreshX",
     DisplayStorageConnectionString = false
 });
 app.ConfigureAppointmentJobs();
-// Cấu hình CORS để cho phép truy cập từ mọi nguồn
+
 // Enable CORS
 app.UseCors(builder =>
 {
@@ -514,34 +499,32 @@ app.UseCors(builder =>
            .AllowAnyMethod()
            .AllowAnyHeader()
            .AllowAnyMethod();
-           
+
 });
 
 app.MapHub<ChatHub>("/chathub").RequireCors(policy =>
 {
     policy.AllowAnyHeader()
           .AllowAnyMethod()
-          .SetIsOriginAllowed(origin => true) // Tùy chọn: Chấp nhận tất cả origin
-          .AllowCredentials();                // Cho phép tín hiệu sử dụng cookie
+          .SetIsOriginAllowed(origin => true)
+          .AllowCredentials();
 }); ;
 
 app.MapHub<NotificationHub>("/notificationHub").RequireCors(policy =>
 {
     policy.AllowAnyHeader()
           .AllowAnyMethod()
-          .SetIsOriginAllowed(origin => true) // Tùy chọn: Chấp nhận tất cả origin
-          .AllowCredentials();                // Cho phép tín hiệu sử dụng cookie
+          .SetIsOriginAllowed(origin => true)
+          .AllowCredentials();
 });
-// Configure the HTTP request pipeline.
 
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-
-//chạy swagger trên puplig
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
@@ -549,9 +532,7 @@ app.UseSwaggerUI(options =>
     options.RoutePrefix = string.Empty;
 });
 
-
 app.UseHttpsRedirection();
-//xac thuc truoc khi phan quyen
 app.UseAuthentication();
 app.UseAuthorization();
 
