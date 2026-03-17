@@ -1,0 +1,15 @@
+using FreshX.Domain.Entities;
+
+namespace FreshX.Application.Interfaces.ServiceType
+{
+    public interface IServiceTypeRepository
+    {
+        Task<IEnumerable<ServiceTypes>> GetAllAsync(string? searchKey);
+        Task<ServiceTypes?> GetByIdAsync(int id);
+        Task<ServiceTypes> AddAsync(ServiceTypes serviceType);
+        Task UpdateAsync(ServiceTypes serviceType);
+        Task DeleteAsync(int id);
+    }
+
+}
+

@@ -14,9 +14,21 @@ public abstract class BaseEntity
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    public DateTime CreatedDate
+    {
+        get => CreatedAt;
+        set => CreatedAt = value;
+    }
+
     public string? UpdatedBy { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
+
+    public DateTime? UpdatedDate
+    {
+        get => UpdatedAt;
+        set => UpdatedAt = value;
+    }
 
     public bool IsDeleted { get; set; } = false;
 
