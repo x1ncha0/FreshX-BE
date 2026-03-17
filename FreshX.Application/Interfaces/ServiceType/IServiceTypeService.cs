@@ -7,7 +7,7 @@ namespace FreshX.Application.Interfaces.ServiceType
         Task<IEnumerable<ServiceTypes>> GetAllAsync(string? searchKey);
         Task<ServiceTypes?> GetByIdAsync(int id);
         Task<ServiceTypes> AddAsync(ServiceTypes serviceType);
-        Task UpdateAsync(ServiceTypes serviceType);
+        Task UpdateAsync(int id, ServiceTypes serviceType);
         Task DeleteAsync(int id);
     }
 
