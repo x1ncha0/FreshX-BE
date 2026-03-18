@@ -32,7 +32,7 @@ namespace FreshX.Application.Interfaces
         // Lấy thông tin InventoryType theo ID
         Task<InventoryType?> GetInventoryTypeByIdAsync(int? inventoryTypeId);
 
-        Task<Pharmacy> GetPharmacyByCodeAsync(string code);
+        Task<Pharmacy?> GetPharmacyByCodeAsync(string code);
         
     }
 }

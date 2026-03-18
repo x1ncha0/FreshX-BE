@@ -2,7 +2,7 @@ namespace FreshX.Application.Dtos.Auth.Account
 {
     public class ForgotPasswordResponse
     {
-        public string Code { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
     }
 }
 

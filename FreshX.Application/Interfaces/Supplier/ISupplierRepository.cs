@@ -25,7 +25,7 @@ namespace FreshX.Application.Interfaces
 
         Task DeleteAsyncCode(string code); // Xóa mềm nhà cung cấp
 
-        Task<Supplier> GetSupplierByCodeAsync(string code);
+        Task<Supplier?> GetSupplierByCodeAsync(string code);
     }
 }
 

@@ -1,0 +1,24 @@
+using FreshX.Application.Validation.Attributes;
+using System.ComponentModel.DataAnnotations;
+
+namespace FreshX.Application.Dtos.Auth.Account
+{
+    public class SetPasswordRequest
+    {
+        [Required(ErrorMessage = "Email là bắt buộc")]
+        [EmailAddress(ErrorMessage = "Email không hợp lệ")]
+        public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Token là bắt buộc")]
+        public string Token { get; set; } = string.Empty;
+
+        [StrongPassword]
+        [Required(ErrorMessage = "Mật khẩu là bắt buộc")]
+        [StringLength(100, MinimumLength = 6, ErrorMessage = "Mật khẩu phải có ít nhất 6 ký tự")]
+        public string Password { get; set; } = string.Empty;
+
+        [Compare("Password", ErrorMessage = "Mật khẩu xác nhận không khớp")]
+        [Required(ErrorMessage = "Vui lòng xác nhận mật khẩu")]
+        public string ConfirmPassword { get; set; } = string.Empty;
+    }
+}
