@@ -1,3 +1,4 @@
+using FreshX.API.Middleware;
 using FreshX.Application;
 using FreshX.Infrastructure;
 
@@ -19,7 +20,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionMiddleware>();
+
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
