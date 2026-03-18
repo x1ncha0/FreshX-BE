@@ -8,11 +8,11 @@ namespace FreshX.Application.Dtos.Auth.Account
         [StrongPassword]
         [Required(ErrorMessage = "Mật khẩu là bắt buộc")]
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Mật khẩu phải có ít nhất 6 ký tự")]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
         [Compare("Password", ErrorMessage = "Mật khẩu xác nhận không khớp")]
         [Required(ErrorMessage = "Vui lòng xác nhận mật khẩu")]
-        public string ConfirmPassword { get; set; }
+        public string ConfirmPassword { get; set; } = string.Empty;
     }
 }
 

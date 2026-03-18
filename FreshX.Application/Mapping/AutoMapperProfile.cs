@@ -49,8 +49,8 @@ namespace FreshX.Application.Mapping
             CreateMap<Doctor, DoctorDto>()
              .ForMember(dest => dest.DoctorId, opt => opt.MapFrom(src => src.Id))
               // Chỉ map những trường có tên khác nhau
-              .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position.Name))
-              .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name));
+              .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position != null ? src.Position.Name : null))
+              .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department != null ? src.Department.Name : null));
             CreateMap<Doctor, DoctorDetailDto>()
                 .ForMember(dest => dest.DoctorId, opt => opt.MapFrom(src => src.Id));
             CreateMap<DoctorCreateUpdateDto, Doctor>();
@@ -172,14 +172,14 @@ namespace FreshX.Application.Mapping
             //Mapping Employee to EmployeeDto
             CreateMap<Employee, EmployeeDto>()
             // Chỉ map những trường có tên khác nhau
-            .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position.Name))
-            .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name));
+            .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position != null ? src.Position.Name : null))
+            .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department != null ? src.Department.Name : null));
 
             //Mapping TechnicianModel to TechnicianDto
             CreateMap<Technician,TechnicianDto>()
            // Chỉ map những trường có tên khác nhau
-           .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position.Name))
-           .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name));
+           .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position != null ? src.Position.Name : null))
+           .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department != null ? src.Department.Name : null));
 
             //Mapping AppUserModel to UserAccountManagementDto
             CreateMap<AppUser, UserAccountResponse>();
@@ -187,11 +187,11 @@ namespace FreshX.Application.Mapping
             //
             CreateMap<OnlineAppointment, OnlineAppointmentDto>()
            .ForMember(dest => dest.DoctorName,
-               opt => opt.MapFrom(src => src.Doctor.Name))  // Giả sử Doctor có trường Name
-           .ForMember(dest => dest.DepartmentName,
-               opt => opt.MapFrom(src => src.Doctor.Department.Name))  // Giả sử Doctor có navigation property Department
-           .ForMember(dest => dest.StartTime,
-               opt => opt.MapFrom(src => src.TimeSlot.StartTime));
+               opt => opt.MapFrom(src => src.Doctor != null ? src.Doctor.Name : null))  // Giả sử Doctor có trường Name
+            .ForMember(dest => dest.DepartmentName,
+               opt => opt.MapFrom(src => src.Doctor != null && src.Doctor.Department != null ? src.Doctor.Department.Name : null))  // Giả sử Doctor có navigation property Department
+            .ForMember(dest => dest.StartTime,
+               opt => opt.MapFrom(src => src.TimeSlot != null ? src.TimeSlot.StartTime : default));
             //labresult - xét nghiệm
             CreateMap<LabResult, LabResultDto>().ReverseMap();
             CreateMap<LabResult, CreateLabResultDto>().ReverseMap();

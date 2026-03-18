@@ -14,7 +14,5 @@ namespace FreshX.Application.Interfaces.Payments
         Task<PaymentDto> ProcessPaymentAsync(PaymentDto paymentDto);
         //Task<byte[]> GenerateBillPdfAsync(int billId);
     }
-
-
 }
 

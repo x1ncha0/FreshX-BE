@@ -6,7 +6,7 @@ namespace FreshX.Application.Dtos
 {
     public class CreateReceptionDto
     {
-        public AddingPatientRequest AddingPatient { get; set; }
+        public AddingPatientRequest AddingPatient { get; set; } = null!;
         public int? SequenceNumber { get; set; }
         public bool? IsPriority { get; set; }
         public int? PatientId { get; set; }
@@ -38,7 +38,7 @@ namespace FreshX.Application.Dtos
         public DateTime? CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public ExamineOnly Examine { get; set; }
-        public LabResult LabResult { get; set; }
+        public ExamineOnly Examine { get; set; } = null!;
+        public LabResult LabResult { get; set; } = null!;
     }
 }
