@@ -1,5 +1,6 @@
 using FreshX.Application.Interfaces.ServiceType;
 using FreshX.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreshX.API.Controllers;
@@ -24,6 +25,7 @@ public class ServiceTypesController(IServiceTypeService serviceTypeService) : Co
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Create([FromBody] ServiceTypes serviceType, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -31,6 +33,7 @@ public class ServiceTypesController(IServiceTypeService serviceTypeService) : Co
     }
 
     [HttpPut("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> Update(int id, [FromBody] ServiceTypes serviceType, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -39,6 +42,7 @@ public class ServiceTypesController(IServiceTypeService serviceTypeService) : Co
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();

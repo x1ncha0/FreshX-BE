@@ -1,11 +1,13 @@
 ﻿using FreshX.Application.Dtos.ExamineDtos;
 using FreshX.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreshX.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ExamineController(IExamineService examineService) : ControllerBase
 {
     [HttpGet]

@@ -1,11 +1,13 @@
 ﻿using FreshX.Application.Dtos;
 using FreshX.Application.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreshX.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class LabResultController(ILabResultService labResultService) : ControllerBase
 {
     [HttpGet]

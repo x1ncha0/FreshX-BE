@@ -1,11 +1,13 @@
 ﻿using FreshX.Application.Dtos.Payments;
 using FreshX.Application.Interfaces.Payments;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreshX.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class PaymentsController(
     IBillingService billingService,
     IPdfService pdfService) : ControllerBase
