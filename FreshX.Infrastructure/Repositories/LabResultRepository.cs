@@ -7,7 +7,7 @@ namespace FreshX.Infrastructure.Repositories;
 
 public class LabResultRepository(FreshXDbContext context) : ILabResultRepository
 {
-    public async Task<IEnumerable<LabResult>> GetAllAsync(string searchKey = null!)
+    public async Task<IEnumerable<LabResult>> GetAllAsync(string? searchKey = null)
     {
         var query = context.LabResults.AsNoTracking().AsQueryable();
 

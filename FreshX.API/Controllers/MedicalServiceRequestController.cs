@@ -1,11 +1,13 @@
 using FreshX.Application.Dtos;
 using FreshX.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreshX.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class MedicalServiceRequestController(IMedicalServiceRequestService medicalServiceRequestService) : ControllerBase
 {
     [HttpGet]

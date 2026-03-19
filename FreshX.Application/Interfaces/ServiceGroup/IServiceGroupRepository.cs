@@ -29,6 +29,8 @@ namespace FreshX.Application.Interfaces
 
         // Tìm nhóm dịch vụ theo tên
         Task<ServiceGroup?> GetByNameAsync(string name);
+
+        Task<ServiceGroup?> GetByCodeAsync(string code);
     }
 }
 

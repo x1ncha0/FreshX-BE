@@ -14,7 +14,7 @@ public class PdfRepository(FreshXDbContext context) : IPdfRepository
             .AsNoTracking()
             .Include(b => b.BillDetails)
             .ThenInclude(bd => bd.ServiceCatalog)
-            .Include(b => b.Reception)
+            .Include(b => b.Reception!)
             .ThenInclude(r => r.Patient)
             .FirstOrDefaultAsync(b => b.Id == billId)
             ?? throw new KeyNotFoundException($"Bill {billId} was not found.");

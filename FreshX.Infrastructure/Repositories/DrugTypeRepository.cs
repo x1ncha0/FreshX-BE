@@ -6,7 +6,7 @@ namespace FreshX.Infrastructure.Repositories;
 
 public class DrugTypeRepository(FreshXDbContext context) : IDrugTypeRepository
 {
-    public async Task<List<DrugType?>> GetDrugTypeAsync(string? searchKeyword, DateTime? createdDate, DateTime? updatedDate, int? status)
+    public async Task<List<DrugType>> GetDrugTypeAsync(string? searchKeyword, DateTime? createdDate, DateTime? updatedDate, int? status)
     {
         var query = context.DrugTypes.AsNoTracking().AsQueryable();
 

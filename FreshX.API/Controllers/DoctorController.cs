@@ -2,6 +2,7 @@
 using FreshX.Application.Dtos.CommonDtos;
 using FreshX.Application.Dtos.Doctor;
 using FreshX.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreshX.API.Controllers;
@@ -11,6 +12,7 @@ namespace FreshX.API.Controllers;
 public class DoctorController(IDoctorService doctorService) : ControllerBase
 {
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<DoctorDto>> Create([FromForm] DoctorCreateUpdateDto request, CancellationToken cancellationToken)
     {
         var doctor = await doctorService.CreateAsync(request, cancellationToken);
@@ -32,6 +34,7 @@ public class DoctorController(IDoctorService doctorService) : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize]
     public async Task<ActionResult<DoctorDto>> Update(int id, [FromForm] DoctorCreateUpdateDto request, CancellationToken cancellationToken)
     {
         var doctor = await doctorService.UpdateAsync(id, request, cancellationToken);
@@ -39,6 +42,7 @@ public class DoctorController(IDoctorService doctorService) : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize]
     public async Task<ActionResult<DoctorDto>> Delete(int id, CancellationToken cancellationToken)
     {
         var doctor = await doctorService.DeleteAsync(id, cancellationToken);

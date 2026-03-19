@@ -26,6 +26,8 @@ namespace FreshX.Application.Interfaces
 
         // Kiểm tra trạng thái dịch vụ theo ID (giúp xác nhận trước khi thực hiện thao tác)
         Task<bool> CheckStatusByIdAsync(int id);
+
+        Task<ServiceCatalog?> GetByCodeAsync(string code);
     }
 }
 

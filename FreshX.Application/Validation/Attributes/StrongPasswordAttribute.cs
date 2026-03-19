@@ -5,12 +5,15 @@ namespace FreshX.Application.Validation.Attributes
 {
     public class StrongPasswordAttribute : ValidationAttribute
     {
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             if (value == null)
                 return new ValidationResult("Mật khẩu không được để trống");
 
             var password = value.ToString();
+            if (string.IsNullOrWhiteSpace(password))
+                return new ValidationResult("Mật khẩu không được để trống");
+
             var errors = new List<string>();
 
             if (password.Length < 6)

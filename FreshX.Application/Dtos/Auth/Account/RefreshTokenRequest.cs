@@ -5,7 +5,7 @@ namespace FreshX.Application.Dtos.Auth.Account
     public class RefreshTokenRequest
     {
         [Required]
-        public string Token { get; set; }
+        public string Token { get; set; } = string.Empty;
     }
 }
 

@@ -6,8 +6,8 @@ namespace FreshX.Application.Dtos.Auth.Account
     {
         [EmailAddress]
         [Required]
-        public string Email { get; set; }
-        public string Name { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         public string? RoleId { get; set; }
         public bool? IsActive {  get; set; }
     }

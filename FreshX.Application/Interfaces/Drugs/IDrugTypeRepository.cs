@@ -3,7 +3,7 @@ using FreshX.Domain.Entities;
 
 public interface IDrugTypeRepository
 {
-    Task<List<DrugType?>> GetDrugTypeAsync(string? searchKeyword,
+    Task<List<DrugType>> GetDrugTypeAsync(string? searchKeyword,
       DateTime? CreatetDate,
       DateTime? UpdatedDate,
       int? status);

@@ -1,11 +1,13 @@
 ﻿using FreshX.Application.Dtos;
 using FreshX.Application.Interfaces.IReception;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreshX.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ReceptionController(IReceptionService receptionService) : ControllerBase
 {
     [HttpGet]

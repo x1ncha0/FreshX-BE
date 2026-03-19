@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using FreshX.Domain.Common;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FreshX.Domain.Entities;
 
-public class AppUser : IdentityUser
+public class AppUser : AuditableIdentityUser
 {
     public string? FullName { get; set; }
 
@@ -12,10 +12,6 @@ public class AppUser : IdentityUser
     public DateTime? DateOfBirth { get; set; }
 
     public bool? IsActive { get; set; }
-
-    public DateTime? CreatedAt { get; set; }
-
-    public DateTime? UpdatedAt { get; set; }
 
     public string? RefreshToken { get; set; }
 

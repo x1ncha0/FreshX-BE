@@ -11,6 +11,8 @@ public partial class Employee : BaseEntity
 
     public string? FullName { get; set; }
 
+    public string? EmployeeCode { get; set; }
+
     /// <summary>
     /// Ngày sinh nhân viên
     /// </summary>

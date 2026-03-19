@@ -8,7 +8,7 @@ namespace FreshX.Application.Services;
 
 public class LabResultService(ILabResultRepository repository, IMapper mapper) : ILabResultService
 {
-    public async Task<IEnumerable<LabResultDto>> GetAllAsync(string searchKey = null!)
+    public async Task<IEnumerable<LabResultDto>> GetAllAsync(string? searchKey = null)
     {
         var labResults = await repository.GetAllAsync(searchKey);
         return labResults.Select(ToDto).ToList();

@@ -1,5 +1,6 @@
 ﻿using FreshX.Application.Dtos.Drugs;
 using FreshX.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreshX.API.Controllers;
@@ -29,6 +30,7 @@ public class DrugTypesController(IDrugTypeService drugTypeService) : ControllerB
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Create([FromBody] DrugTypeCreateDto dto, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -37,6 +39,7 @@ public class DrugTypesController(IDrugTypeService drugTypeService) : ControllerB
     }
 
     [HttpPut("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> Update(int id, [FromBody] DrugTypeUpdateDto dto, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -45,6 +48,7 @@ public class DrugTypesController(IDrugTypeService drugTypeService) : ControllerB
     }
 
     [HttpDelete("{id:int}/soft")]
+    [Authorize]
     public async Task<IActionResult> SoftDelete(int id, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -52,6 +56,7 @@ public class DrugTypesController(IDrugTypeService drugTypeService) : ControllerB
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();

@@ -1,11 +1,13 @@
 ﻿using FreshX.Application.Dtos.Prescription;
 using FreshX.Application.Interfaces.IPrescription;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FreshX.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class PrescriptionController(
     IPrescriptionService prescriptionService,
     IPrescriptionDetailService prescriptionDetailService) : ControllerBase
