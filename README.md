@@ -49,7 +49,7 @@ Before running the project, make sure you have installed:
 ### 1. Clone the repository
 
 ``` bash
-git clone https://github.com/your-repo/freshx-be.git
+git clone https://github.com/x1ncha0/FreshX-BE.git
 ```
 
 ### 2. Configure Environment Variables
@@ -92,25 +92,7 @@ dotnet run
 
 ------------------------------------------------------------------------
 
-## Environment Variables Example
-
-Example `.env` file:
-
-    DB_CONNECTION=your_connection_string
-    JWT_SECRET=your_secret_key
-    JWT_ISSUER=FreshX
-    JWT_AUDIENCE=FreshXUsers
-
-------------------------------------------------------------------------
-
-## API Documentation
-
-If Swagger is enabled, access it at:
-
-    https://localhost:xxxx/swagger
-
-------------------------------------------------------------------------
-
 ## Author
 
-Developed by **FreshX**
+Developed by **FreshX Team**
+Refactored by **x1ncha0**
