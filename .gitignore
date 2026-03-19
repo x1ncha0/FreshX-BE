@@ -50,6 +50,3 @@ appsettings.Development.json
 
 # env
 .env
-
-*.docx
-.github
